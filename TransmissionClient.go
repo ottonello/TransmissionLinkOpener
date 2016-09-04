@@ -7,17 +7,13 @@ import (
 )
 
 type TransmissionClient struct {
+	url string
 	username string
 	password string
 }
 
-type TorrentAction struct{
-	method string 			`json:"method"`
-	arguments []interface{} 	`json:"arguments"`
-}
-
-func NewTransmissionClient (username string, password string) *TransmissionClient {
-	return &TransmissionClient{username, password}
+func NewTransmissionClient (url string, username string, password string) *TransmissionClient {
+	return &TransmissionClient{url, username, password}
 }
 
 func (client *TransmissionClient) addTorrent(uri string) {
@@ -52,6 +48,6 @@ func (client *TransmissionClient) callAddTorrent(uri string, sesId string) (resp
 	body := fmt.Sprintf(`{"method":"torrent-add", "arguments": {"filename": "%s"}}`, uri)
 	request := client.buildRequest(sesId)
 	request.SetBody(body)
-	resp, err = request.Post(transmissionUrl)
+	resp, err = request.Post(client.url)
 	return resp, err
 }
